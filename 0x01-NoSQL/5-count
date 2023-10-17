@@ -1,2 +1,2 @@
 // displays number of documents in collection school
-db.school.find({ "name": "Holberton school" })
+db.school.count()
