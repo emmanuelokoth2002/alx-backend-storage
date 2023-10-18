@@ -1,30 +1,24 @@
+#!/usr/bin/env python3
+""" returns all students sorted by average score"""
+
+
 def top_students(mongo_collection):
-    """
-    Returns all students sorted by average score.
+    """Returns all students sorted"""
 
-    Args:
-        mongo_collection: The pymongo collection object representing the students' collection.
-
-    Returns:
-        A list of students sorted by average score.
-    """
-    pipeline = [
-        {
+    project_stage = {
             "$project": {
-                "name": 1,
-                "topics": 1,
-                "averageScore": {
-                    "$avg": "$topics.score"
+                "_id": "$_id",
+                "name": "$name",
+                "averageScore": {"$avg": "$topics.score"}
                 }
             }
-        },
-        {
-            "$sort": {
-                "averageScore": -1
+
+    sort_stage = {
+            "$sort": {"averageScore": -1}
             }
-        }
-    ]
 
-    top_students = list(mongo_collection.aggregate(pipeline))
+    aggr_students = mongo_collection.aggregate([
+        project_stage, sort_stage
+        ])
 
-    return top_students
+    return aggr_students
